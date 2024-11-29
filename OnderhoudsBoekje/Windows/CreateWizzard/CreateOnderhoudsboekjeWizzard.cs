@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OnderhoudsBoekje.Data.Models;
+﻿using OnderhoudsBoekje.Data.Models;
 using RdwApi;
 
 namespace OnderhoudsBoekje.CreateWizzard
