@@ -24,6 +24,7 @@ namespace OnderhoudsBoekje.Windows
             }
 
             durationItems.Reverse();
+            durationCombo.Items.Clear();
             durationCombo.Items.AddRange(durationItems.ToArray());
 
             if (_id == null)

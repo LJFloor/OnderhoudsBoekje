@@ -43,8 +43,9 @@ namespace OnderhoudsBoekje
             }
             else
             {
+                Config = new ConfigFile();
                 Directory.CreateDirectory(Path.GetDirectoryName(configPath)!);
-                File.WriteAllText(configPath, JsonSerializer.Serialize(new Data.Models.ConfigFile()));
+                File.WriteAllText(configPath, JsonSerializer.Serialize(Config));
             }
         }
 
@@ -79,6 +80,7 @@ namespace OnderhoudsBoekje
             }
 
             OpenFile = file;
+            toolStripButton1.Enabled = true;
             RenderRows();
             SaveConfig();
             RenderShell();

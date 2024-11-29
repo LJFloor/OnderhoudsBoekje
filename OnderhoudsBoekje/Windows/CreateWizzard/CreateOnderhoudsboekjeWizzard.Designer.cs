@@ -358,7 +358,7 @@
             Controls.Add(licensePlateTextbox1);
             Controls.Add(panel1);
             Name = "CreateOnderhoudsboekjeWizzard";
-            Text = "CreateOnderhoudsboekjeWizzard";
+            Text = "Nieuw onderhoudsboekje maken";
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             panel2.ResumeLayout(false);

@@ -16,6 +16,7 @@ namespace OnderhoudsBoekje.CreateWizzard
             vinLocationTxt.Text = "";
             buildYearNr.Minimum = 1900;
             buildYearNr.Maximum = DateTime.Now.Year;
+            Icon = Icon.FromHandle(Properties.Resources.book_add.GetHicon());
         }
 
         private async void licensePlateTextbox1_Leave(object sender, EventArgs e)

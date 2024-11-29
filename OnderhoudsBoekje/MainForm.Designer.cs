@@ -65,7 +65,7 @@
             listView1.GridLines = true;
             listView1.Location = new Point(0, 52);
             listView1.Name = "listView1";
-            listView1.Size = new Size(1108, 485);
+            listView1.Size = new Size(1119, 485);
             listView1.TabIndex = 0;
             listView1.UseCompatibleStateImageBehavior = false;
             listView1.View = View.Details;
@@ -114,12 +114,13 @@
             toolStrip1.Location = new Point(0, 24);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Padding = new Padding(2, 0, 2, 0);
-            toolStrip1.Size = new Size(1108, 25);
+            toolStrip1.Size = new Size(1119, 25);
             toolStrip1.TabIndex = 1;
             toolStrip1.Text = "toolStrip1";
             // 
             // toolStripButton1
             // 
+            toolStripButton1.Enabled = false;
             toolStripButton1.Image = Properties.Resources.add;
             toolStripButton1.ImageTransparentColor = Color.Magenta;
             toolStripButton1.Name = "toolStripButton1";
@@ -142,7 +143,7 @@
             statusStrip1.Items.AddRange(new ToolStripItem[] { status1 });
             statusStrip1.Location = new Point(0, 537);
             statusStrip1.Name = "statusStrip1";
-            statusStrip1.Size = new Size(1108, 22);
+            statusStrip1.Size = new Size(1119, 22);
             statusStrip1.TabIndex = 2;
             statusStrip1.Text = "statusStrip1";
             // 
@@ -157,7 +158,7 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { bestandToolStripMenuItem, bewerkenToolStripMenuItem, weergaveToolStripMenuItem, overToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(1108, 24);
+            menuStrip1.Size = new Size(1119, 24);
             menuStrip1.TabIndex = 3;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -235,7 +236,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1108, 559);
+            ClientSize = new Size(1119, 559);
             Controls.Add(statusStrip1);
             Controls.Add(toolStrip1);
             Controls.Add(menuStrip1);
