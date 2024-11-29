@@ -44,6 +44,7 @@
             menuStrip1 = new MenuStrip();
             bestandToolStripMenuItem = new ToolStripMenuItem();
             openenToolStripMenuItem = new ToolStripMenuItem();
+            recentFilesMenuButton = new ToolStripMenuItem();
             opslaanToolStripMenuItem = new ToolStripMenuItem();
             nieuwOnderhoudsboekjeToolStripMenuItem = new ToolStripMenuItem();
             bewerkenToolStripMenuItem = new ToolStripMenuItem();
@@ -68,6 +69,8 @@
             listView1.TabIndex = 0;
             listView1.UseCompatibleStateImageBehavior = false;
             listView1.View = View.Details;
+            listView1.ItemSelectionChanged += listView1_ItemSelectionChanged;
+            listView1.DoubleClick += listView1_DoubleClick;
             // 
             // attachmentsHeader
             // 
@@ -132,6 +135,7 @@
             deleteBtn.Name = "deleteBtn";
             deleteBtn.Size = new Size(88, 22);
             deleteBtn.Text = "Verwijderen";
+            deleteBtn.Click += deleteBtn_Click;
             // 
             // statusStrip1
             // 
@@ -159,7 +163,7 @@
             // 
             // bestandToolStripMenuItem
             // 
-            bestandToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openenToolStripMenuItem, opslaanToolStripMenuItem, nieuwOnderhoudsboekjeToolStripMenuItem });
+            bestandToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openenToolStripMenuItem, recentFilesMenuButton, opslaanToolStripMenuItem, nieuwOnderhoudsboekjeToolStripMenuItem });
             bestandToolStripMenuItem.Name = "bestandToolStripMenuItem";
             bestandToolStripMenuItem.Size = new Size(61, 20);
             bestandToolStripMenuItem.Text = "Bestand";
@@ -168,15 +172,23 @@
             // 
             openenToolStripMenuItem.Image = Properties.Resources.book;
             openenToolStripMenuItem.Name = "openenToolStripMenuItem";
-            openenToolStripMenuItem.Size = new Size(210, 22);
+            openenToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl + O";
+            openenToolStripMenuItem.Size = new Size(259, 22);
             openenToolStripMenuItem.Text = "Openen";
             openenToolStripMenuItem.Click += openenToolStripMenuItem_Click;
+            // 
+            // recentFilesMenuButton
+            // 
+            recentFilesMenuButton.Name = "recentFilesMenuButton";
+            recentFilesMenuButton.Size = new Size(259, 22);
+            recentFilesMenuButton.Text = "Recente bestanden";
             // 
             // opslaanToolStripMenuItem
             // 
             opslaanToolStripMenuItem.Image = Properties.Resources.save;
             opslaanToolStripMenuItem.Name = "opslaanToolStripMenuItem";
-            opslaanToolStripMenuItem.Size = new Size(210, 22);
+            opslaanToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl + S";
+            opslaanToolStripMenuItem.Size = new Size(259, 22);
             opslaanToolStripMenuItem.Text = "Opslaan";
             opslaanToolStripMenuItem.Click += opslaanToolStripMenuItem_Click;
             // 
@@ -184,7 +196,8 @@
             // 
             nieuwOnderhoudsboekjeToolStripMenuItem.Image = Properties.Resources.book_add;
             nieuwOnderhoudsboekjeToolStripMenuItem.Name = "nieuwOnderhoudsboekjeToolStripMenuItem";
-            nieuwOnderhoudsboekjeToolStripMenuItem.Size = new Size(210, 22);
+            nieuwOnderhoudsboekjeToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl + N";
+            nieuwOnderhoudsboekjeToolStripMenuItem.Size = new Size(259, 22);
             nieuwOnderhoudsboekjeToolStripMenuItem.Text = "Nieuw onderhoudsboekje";
             nieuwOnderhoudsboekjeToolStripMenuItem.Click += nieuwOnderhoudsboekjeToolStripMenuItem_Click;
             // 
@@ -265,5 +278,6 @@
         private ToolStripMenuItem overToolStripMenuItem;
         private ColumnHeader attachmentsHeader;
         private ToolStripMenuItem sToolStripMenuItem;
+        private ToolStripMenuItem recentFilesMenuButton;
     }
 }

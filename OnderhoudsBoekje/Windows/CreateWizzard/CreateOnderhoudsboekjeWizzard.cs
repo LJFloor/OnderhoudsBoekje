@@ -8,6 +8,7 @@ namespace OnderhoudsBoekje.CreateWizzard
     {
         private string PreviousLicensePlate = "";
         private readonly RdwClient _rdwClient = new();
+        public string Filename { get; private set; }
 
         public CreateOnderhoudsboekjeWizzard()
         {
@@ -181,6 +182,8 @@ namespace OnderhoudsBoekje.CreateWizzard
             MainForm.Save();
 
             MessageBox.Show("Onderhoudsboekje aangemaakt", "Onderhoudsboekje aangemaakt", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            DialogResult = DialogResult.OK;
+            Filename = locationTxt.Text;
             Close();
         }
 

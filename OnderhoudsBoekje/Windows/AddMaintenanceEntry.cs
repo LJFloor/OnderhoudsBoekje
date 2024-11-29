@@ -4,10 +4,12 @@ namespace OnderhoudsBoekje.Windows
 {
     public partial class AddMaintenanceEntry : Form
     {
-        public AddMaintenanceEntry()
+        private readonly Guid? _id;
+        public AddMaintenanceEntry(Guid? id = null)
         {
             InitializeComponent();
             Icon = Icon.FromHandle(Properties.Resources.add.GetHicon());
+            _id = id;
 
             typeCombo.Items.AddRange(Enum.GetNames<MaintenanceType>());
             typeCombo.SelectedIndex = 0;
@@ -24,7 +26,23 @@ namespace OnderhoudsBoekje.Windows
             durationItems.Reverse();
             durationCombo.Items.AddRange(durationItems.ToArray());
 
-            milageTxt.Text = MainForm.Boekje.CarInfo.Mileage.ToString();
+            if (_id == null)
+            {
+                milageTxt.Text = MainForm.Boekje.CarInfo.Mileage.ToString();
+            }
+            else
+            {
+                var entry = MainForm.Boekje.MaintenanceEntries.Find(e => e.Id == _id)!;
+                dateTimePicker1.Value = entry.Date.ToDateTime(new TimeOnly());
+                typeCombo.SelectedIndex = typeCombo.Items.IndexOf(entry.Type.ToString());
+                milageTxt.Text = entry.Mileage.ToString();
+                descriptionTxt.Text = entry.Description;
+
+                durationCombo.SelectedIndex = durationCombo.Items.IndexOf(entry.Duration?.ToString("hh\\:mm") ?? "00:00");
+                costTxt.Value = entry.Cost ?? 0;
+                notesTxt.Text = entry.Notes;
+                createBtn.Text = "Opslaan";
+            }
         }
 
         private void numericUpDown2_KeyPress(object sender, KeyPressEventArgs e)
@@ -46,9 +64,8 @@ namespace OnderhoudsBoekje.Windows
 
         private void createBtn_Click(object sender, EventArgs e)
         {
-            // insert at the beginning
             var milage = uint.Parse(milageTxt.Text);
-            MainForm.Boekje.MaintenanceEntries.Insert(0, new MaintenanceEntry
+            var newEntry = new MaintenanceEntry
             {
                 Id = Guid.NewGuid(),
                 Date = DateOnly.FromDateTime(dateTimePicker1.Value.Date),
@@ -58,13 +75,29 @@ namespace OnderhoudsBoekje.Windows
                 Type = (MaintenanceType)Enum.Parse(typeof(MaintenanceType), typeCombo.SelectedItem.ToString()),
                 Cost = costTxt.Value is 0 ? null : costTxt.Value,
                 Notes = string.IsNullOrWhiteSpace(notesTxt.Text) ? null : notesTxt.Text,
-            });
+            };
 
-            if (milage > MainForm.Boekje.CarInfo.Mileage)
+            if (_id == null)
             {
-                MainForm.Boekje.CarInfo.Mileage = milage;
+                // insert at the beginning
+                MainForm.Boekje.MaintenanceEntries.Insert(0, newEntry);
+
+                if (milage > MainForm.Boekje.CarInfo.Mileage)
+                {
+                    MainForm.Boekje.CarInfo.Mileage = milage;
+                }
+            }
+            else
+            {
+                newEntry.Id = _id.Value;
+                var index = MainForm.Boekje.MaintenanceEntries.FindIndex(e => e.Id == _id);
+
+                // remove the old, insert the new
+                MainForm.Boekje.MaintenanceEntries.RemoveAt(index);
+                MainForm.Boekje.MaintenanceEntries.Insert(index, newEntry);
             }
 
+            DialogResult = DialogResult.OK;
             Close();
         }
 
@@ -82,7 +115,6 @@ namespace OnderhoudsBoekje.Windows
         {
             await Task.Delay(50);
             descriptionTxt.Focus();
-
         }
     }
 }
