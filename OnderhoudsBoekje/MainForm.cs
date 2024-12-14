@@ -1,6 +1,7 @@
 using OnderhoudsBoekje.CreateWizzard;
 using OnderhoudsBoekje.Data.Models;
 using OnderhoudsBoekje.Windows;
+using RdwApi;
 using System.Text.Json;
 
 namespace OnderhoudsBoekje
@@ -84,6 +85,7 @@ namespace OnderhoudsBoekje
             RenderRows();
             SaveConfig();
             RenderShell();
+            CheckForApkChange();
         }
 
         public static void Save()
@@ -149,9 +151,9 @@ namespace OnderhoudsBoekje
             }).ToArray());
         }
 
-        private void OpenEditWindow(Guid? id = null)
+        private void OpenEditWindow(MaintenanceEntry? entry = null)
         {
-            var window = new AddMaintenanceEntry(id);
+            var window = new AddMaintenanceEntry(entry);
             // set the window to the same screen as the parent
             window.StartPosition = FormStartPosition.Manual;
             window.Location = new Point(Location.X + (Width - window.Width) / 2, Location.Y + (Height - window.Height) / 2);
@@ -242,7 +244,62 @@ namespace OnderhoudsBoekje
             }
 
             var entry = Boekje.MaintenanceEntries[listView1.SelectedItems[0].Index];
-            OpenEditWindow(entry.Id);
+            OpenEditWindow(entry);
+        }
+
+        private async void CheckForApkChange()
+        {
+            if (string.IsNullOrWhiteSpace(Boekje.CarInfo.LicensePlate))
+            {
+                return;
+            }
+
+            var rdwClient = new RdwClient();
+            var carInfo = await rdwClient.GetCarAsync(Boekje.CarInfo.LicensePlate);
+
+            if (carInfo == null)
+            {
+                return;
+            }
+
+            if (carInfo.ApkExpiryDate < DateTime.Now)
+            {
+                MessageBox.Show($"Let op: De APK voor uw auto is verlopen op {carInfo.ApkExpiryDate.ToString("d MMMM yyyy").ToLower()}!", "APK verlopen", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (carInfo.ApkExpiryDate.AddDays(-14) < DateTime.Now && Boekje.Settings.RemindApkExpiry)
+            {
+                var remindConfirm = MessageBox.Show($"Let op: De APK voor uw auto verloopt op {carInfo.ApkExpiryDate.ToString("d MMMM").ToLower()}!", "APK", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // They already have an APK entry for this year
+            if (Boekje.MaintenanceEntries.Any(x => x.Type == MaintenanceType.APK && x.Date.Year == DateTime.Now.Year))
+            {
+                return;
+            }
+
+            var apkRegisterDate = carInfo.ApkExpiryDate.AddYears(-1);
+
+            // We don't bother people when they created the onderhoudsboekje BEFORE they got an APK this year
+            if (apkRegisterDate < Boekje.Created)
+            {
+                return;
+            }
+
+            var confirm = MessageBox.Show($"Het lijkt erop dat uw auto door de APK is gekomen. Wilt u een onderhoudsitem toevoegen voor de APK van dit jaar?", "APK", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (confirm == DialogResult.Yes)
+            {
+                OpenEditWindow(new MaintenanceEntry
+                {
+                    Type = MaintenanceType.APK,
+                    Description = "APK keuring",
+                    Date = DateOnly.FromDateTime(carInfo.ApkExpiryDate),
+                    Mileage = Boekje.CarInfo.Mileage
+                });
+            }
         }
     }
 }

@@ -5,11 +5,16 @@ namespace OnderhoudsBoekje.Windows
     public partial class AddMaintenanceEntry : Form
     {
         private readonly Guid? _id;
-        public AddMaintenanceEntry(Guid? id = null)
+        public AddMaintenanceEntry(MaintenanceEntry? entry = null)
         {
+            _id = entry?.Id;
+            if (entry?.Id == Guid.Empty)
+            {
+                _id = null;
+            }
+
             InitializeComponent();
             Icon = Icon.FromHandle(Properties.Resources.add.GetHicon());
-            _id = id;
 
             typeCombo.Items.AddRange(Enum.GetNames<MaintenanceType>());
             typeCombo.SelectedIndex = 0;
@@ -27,13 +32,12 @@ namespace OnderhoudsBoekje.Windows
             durationCombo.Items.Clear();
             durationCombo.Items.AddRange(durationItems.ToArray());
 
-            if (_id == null)
+            if (entry == null)
             {
                 milageTxt.Text = MainForm.Boekje.CarInfo.Mileage.ToString();
             }
             else
             {
-                var entry = MainForm.Boekje.MaintenanceEntries.Find(e => e.Id == _id)!;
                 dateTimePicker1.Value = entry.Date.ToDateTime(new TimeOnly());
                 typeCombo.SelectedIndex = typeCombo.Items.IndexOf(entry.Type.ToString());
                 milageTxt.Text = entry.Mileage.ToString();

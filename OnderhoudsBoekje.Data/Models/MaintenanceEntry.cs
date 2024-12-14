@@ -20,7 +20,7 @@
         /// <summary>
         /// Date of when the maintenance was done.
         /// </summary>
-        public DateOnly Date { get; set; }
+        public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Now);
 
         /// <summary>
         /// Mileage of the car when the maintenance was done.
