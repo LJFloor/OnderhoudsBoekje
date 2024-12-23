@@ -18,11 +18,11 @@
         /// <summary>
         /// The date and time when this onderhoudsboekje was created.
         /// </summary>
-        public DateTime Created { get; init; } = DateTime.Now;
+        public DateTime Created { get; set; } = DateTime.Now;
 
         /// <summary>
         /// Settings for this onderhoudsboekje.
         /// </summary>
-        public Settings Settings { get; init; } = new Settings();
+        public Settings Settings { get; set; } = new Settings();
     }
 }
