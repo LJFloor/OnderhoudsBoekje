@@ -1,8 +1,11 @@
 using OnderhoudsBoekje.CreateWizzard;
 using OnderhoudsBoekje.Data.Models;
 using OnderhoudsBoekje.Windows;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
 using RdwApi;
 using System.Text.Json;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace OnderhoudsBoekje
 {
@@ -300,6 +303,95 @@ namespace OnderhoudsBoekje
                     Mileage = Boekje.CarInfo.Mileage
                 });
             }
+        }
+
+        private void exporterenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // export to PDF, landscape
+            var dialog = new SaveFileDialog
+            {
+                Filter = "PDF bestand|*.pdf",
+                Title = "Exporteer onderhoudsboekje",
+                FileName = $"{Boekje.CarInfo.Brand} {Boekje.CarInfo.Model} {Boekje.CarInfo.LicensePlate} onderhoudsboekje.pdf"
+            };
+
+            dialog.ShowDialog();
+
+            if (dialog.FileName == "")
+            {
+                return;
+            }
+
+            var document = new PdfDocument();
+            var page = document.AddPage();
+            page.Size = PdfSharp.PageSize.A4;
+            page.Orientation = PdfSharp.PageOrientation.Landscape;
+            var gfx = XGraphics.FromPdfPage(page);
+            var font = new XFont("Arial", 11);
+
+
+            var headers = new string[] { "Datum", "Kilometerstand", "Omschrijving", "Kosten", "Duur", "Notities" };
+            var columnWidths = new int[] { 100, 100, 300, 70, 50, 200 };
+            DrawHeader(page, gfx, headers, columnWidths);
+
+
+            var rowsPerPage = 24;
+
+            var x = 20.0;
+            var y = 80.0;
+
+            for (int i = 0; i < Boekje.MaintenanceEntries.Count; i++)
+            {
+                MaintenanceEntry? entry = Boekje.MaintenanceEntries[i];
+                x = 20;
+
+                gfx.DrawString(entry.Date.ToString("dd-MM-yyyy"), font, XBrushes.Black, new XRect(x, y, columnWidths[0], 20), XStringFormats.TopLeft);
+                x += columnWidths[0];
+
+                gfx.DrawString(entry.Mileage.ToString(), font, XBrushes.Black, new XRect(x, y, columnWidths[1], 20), XStringFormats.TopLeft);
+                x += columnWidths[1];
+
+                gfx.DrawString(entry.Description, font, XBrushes.Black, new XRect(x, y, columnWidths[2], 20), XStringFormats.TopLeft);
+                x += columnWidths[2];
+
+                gfx.DrawString(entry.Cost?.ToString("C") ?? "", font, XBrushes.Black, new XRect(x, y, columnWidths[3], 20), XStringFormats.TopLeft);
+                x += columnWidths[3];
+
+                gfx.DrawString(entry.Duration == null ? "" : $"{entry.Duration?.Hours:00}:{entry.Duration?.Minutes:00}", font, XBrushes.Black, new XRect(x, y, columnWidths[4], 20), XStringFormats.TopLeft);
+                x += columnWidths[4];
+
+                gfx.DrawString(entry.Notes ?? "", font, XBrushes.Black, new XRect(x, y, columnWidths[5], 20), XStringFormats.TopLeft);
+                y += 20;
+
+                if (i > 0 && i % rowsPerPage == 0)
+                {
+                    y = 80;
+                    var newPage = new PdfPage();
+                    newPage.Orientation = PdfSharp.PageOrientation.Landscape;
+                    newPage.Size = PdfSharp.PageSize.A4;
+                    document.AddPage(newPage);
+                    gfx = XGraphics.FromPdfPage(newPage);
+                    DrawHeader(page, gfx, headers, columnWidths);
+                }
+            }
+
+            document.Save(dialog.FileName);
+
+            MessageBox.Show("Het onderhoudsboekje is geëxporteerd naar een PDF bestand.", "Exporteren", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private static void DrawHeader(PdfPage page, XGraphics gfx, string[] columns, int[] sizes)
+        {
+            var headerFont = new XFont("Arial", 12, XFontStyleEx.Bold);
+            gfx.DrawString($"Onderhoudsboekje voor {Boekje.CarInfo.Brand} {Boekje.CarInfo.Model} ({Boekje.CarInfo.LicensePlate})", headerFont, XBrushes.Black, new XRect(20, 20, page.Width - 40, 20), XStringFormats.TopCenter);
+            var x = 20;
+            var y = 60;
+            for (var i = 0; i < columns.Length; i++)
+            {
+                gfx.DrawString(columns[i], headerFont, XBrushes.Black, new XRect(x, y, sizes[i], 20), XStringFormats.TopLeft);
+                x += sizes[i];
+            }
+
         }
     }
 }

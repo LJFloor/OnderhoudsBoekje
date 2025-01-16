@@ -52,6 +52,7 @@
             sToolStripMenuItem = new ToolStripMenuItem();
             overToolStripMenuItem = new ToolStripMenuItem();
             openFileDialog1 = new OpenFileDialog();
+            exporterenToolStripMenuItem = new ToolStripMenuItem();
             toolStrip1.SuspendLayout();
             statusStrip1.SuspendLayout();
             menuStrip1.SuspendLayout();
@@ -164,7 +165,7 @@
             // 
             // bestandToolStripMenuItem
             // 
-            bestandToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openenToolStripMenuItem, recentFilesMenuButton, opslaanToolStripMenuItem, nieuwOnderhoudsboekjeToolStripMenuItem });
+            bestandToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openenToolStripMenuItem, recentFilesMenuButton, opslaanToolStripMenuItem, nieuwOnderhoudsboekjeToolStripMenuItem, exporterenToolStripMenuItem });
             bestandToolStripMenuItem.Name = "bestandToolStripMenuItem";
             bestandToolStripMenuItem.Size = new Size(61, 20);
             bestandToolStripMenuItem.Text = "Bestand";
@@ -232,6 +233,13 @@
             // 
             openFileDialog1.FileName = "openFileDialog1";
             // 
+            // exporterenToolStripMenuItem
+            // 
+            exporterenToolStripMenuItem.Name = "exporterenToolStripMenuItem";
+            exporterenToolStripMenuItem.Size = new Size(259, 22);
+            exporterenToolStripMenuItem.Text = "Exporteren";
+            exporterenToolStripMenuItem.Click += exporterenToolStripMenuItem_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -280,5 +288,6 @@
         private ColumnHeader attachmentsHeader;
         private ToolStripMenuItem sToolStripMenuItem;
         private ToolStripMenuItem recentFilesMenuButton;
+        private ToolStripMenuItem exporterenToolStripMenuItem;
     }
 }
