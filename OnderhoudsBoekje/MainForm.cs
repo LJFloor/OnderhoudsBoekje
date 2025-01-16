@@ -94,7 +94,10 @@ namespace OnderhoudsBoekje
         public static void Save()
         {
             Cursor.Current = Cursors.WaitCursor;
-            var json = JsonSerializer.Serialize(Boekje);
+            var json = JsonSerializer.Serialize(Boekje, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
             File.WriteAllText(OpenFile, json);
             Cursor.Current = Cursors.Default;
         }
@@ -105,7 +108,10 @@ namespace OnderhoudsBoekje
             Config.RecentlyOpenedFiles = Config.RecentlyOpenedFiles.Where(x => x != OpenFile).ToList();
             Config.RecentlyOpenedFiles.Insert(0, OpenFile);
             Config.RecentlyOpenedFiles = Config.RecentlyOpenedFiles.Take(10).ToList();
-            File.WriteAllText(configPath, JsonSerializer.Serialize(Config));
+            File.WriteAllText(configPath, JsonSerializer.Serialize(Config, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            }));
         }
 
         private void RenderRows()
@@ -167,6 +173,7 @@ namespace OnderhoudsBoekje
                 if (window.DialogResult == DialogResult.OK)
                 {
                     RenderRows();
+                    Save();
                 }
             };
         }
@@ -322,12 +329,14 @@ namespace OnderhoudsBoekje
                 return;
             }
 
-            var document = new PdfDocument();
+            var lightGray = XColor.FromArgb(230, 230, 230);
+
+            using var document = new PdfDocument();
             var page = document.AddPage();
             page.Size = PdfSharp.PageSize.A4;
             page.Orientation = PdfSharp.PageOrientation.Landscape;
             var gfx = XGraphics.FromPdfPage(page);
-            var font = new XFont("Arial", 11);
+            var font = new XFont("Arial", 10);
 
 
             var headers = new string[] { "Datum", "Kilometerstand", "Omschrijving", "Kosten", "Duur", "Notities" };
@@ -335,15 +344,15 @@ namespace OnderhoudsBoekje
             DrawHeader(page, gfx, headers, columnWidths);
 
 
-            var rowsPerPage = 24;
+            var rowsPerPage = 23;
 
-            var x = 20.0;
+            var x = 40.0;
             var y = 80.0;
 
             for (int i = 0; i < Boekje.MaintenanceEntries.Count; i++)
             {
                 MaintenanceEntry? entry = Boekje.MaintenanceEntries[i];
-                x = 20;
+                x = 40;
 
                 gfx.DrawString(entry.Date.ToString("dd-MM-yyyy"), font, XBrushes.Black, new XRect(x, y, columnWidths[0], 20), XStringFormats.TopLeft);
                 x += columnWidths[0];
@@ -361,30 +370,37 @@ namespace OnderhoudsBoekje
                 x += columnWidths[4];
 
                 gfx.DrawString(entry.Notes ?? "", font, XBrushes.Black, new XRect(x, y, columnWidths[5], 20), XStringFormats.TopLeft);
+
+                var pen = new XPen(lightGray);
+                gfx.DrawLine(pen, 40, y + 15, page.Width - 50, y + 15);
+
                 y += 20;
 
                 if (i > 0 && i % rowsPerPage == 0)
                 {
                     y = 80;
-                    var newPage = new PdfPage();
+                    var newPage = document.AddPage();
                     newPage.Orientation = PdfSharp.PageOrientation.Landscape;
                     newPage.Size = PdfSharp.PageSize.A4;
-                    document.AddPage(newPage);
                     gfx = XGraphics.FromPdfPage(newPage);
                     DrawHeader(page, gfx, headers, columnWidths);
                 }
+
+                
             }
 
             document.Save(dialog.FileName);
 
             MessageBox.Show("Het onderhoudsboekje is geëxporteerd naar een PDF bestand.", "Exporteren", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            gfx.Dispose();
         }
 
         private static void DrawHeader(PdfPage page, XGraphics gfx, string[] columns, int[] sizes)
         {
-            var headerFont = new XFont("Arial", 12, XFontStyleEx.Bold);
+            var headerFont = new XFont("Arial", 11, XFontStyleEx.Bold);
             gfx.DrawString($"Onderhoudsboekje voor {Boekje.CarInfo.Brand} {Boekje.CarInfo.Model} ({Boekje.CarInfo.LicensePlate})", headerFont, XBrushes.Black, new XRect(20, 20, page.Width - 40, 20), XStringFormats.TopCenter);
-            var x = 20;
+            var x = 40;
             var y = 60;
             for (var i = 0; i < columns.Length; i++)
             {
@@ -392,6 +408,10 @@ namespace OnderhoudsBoekje
                 x += sizes[i];
             }
 
+            // header line
+            var black = XColor.FromArgb(0, 0, 0);
+            var pen = new XPen(black);
+            gfx.DrawLine(pen, 40, y + 15, page.Width - 50, y + 15);
         }
     }
 }

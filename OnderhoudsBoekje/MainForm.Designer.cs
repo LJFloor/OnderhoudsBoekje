@@ -47,12 +47,12 @@
             recentFilesMenuButton = new ToolStripMenuItem();
             opslaanToolStripMenuItem = new ToolStripMenuItem();
             nieuwOnderhoudsboekjeToolStripMenuItem = new ToolStripMenuItem();
+            exporterenToolStripMenuItem = new ToolStripMenuItem();
             bewerkenToolStripMenuItem = new ToolStripMenuItem();
             weergaveToolStripMenuItem = new ToolStripMenuItem();
             sToolStripMenuItem = new ToolStripMenuItem();
             overToolStripMenuItem = new ToolStripMenuItem();
             openFileDialog1 = new OpenFileDialog();
-            exporterenToolStripMenuItem = new ToolStripMenuItem();
             toolStrip1.SuspendLayout();
             statusStrip1.SuspendLayout();
             menuStrip1.SuspendLayout();
@@ -203,6 +203,14 @@
             nieuwOnderhoudsboekjeToolStripMenuItem.Text = "Nieuw onderhoudsboekje";
             nieuwOnderhoudsboekjeToolStripMenuItem.Click += nieuwOnderhoudsboekjeToolStripMenuItem_Click;
             // 
+            // exporterenToolStripMenuItem
+            // 
+            exporterenToolStripMenuItem.Image = Properties.Resources.file_extension_pdf;
+            exporterenToolStripMenuItem.Name = "exporterenToolStripMenuItem";
+            exporterenToolStripMenuItem.Size = new Size(259, 22);
+            exporterenToolStripMenuItem.Text = "Exporteren naar PDF";
+            exporterenToolStripMenuItem.Click += exporterenToolStripMenuItem_Click;
+            // 
             // bewerkenToolStripMenuItem
             // 
             bewerkenToolStripMenuItem.Name = "bewerkenToolStripMenuItem";
@@ -232,13 +240,6 @@
             // openFileDialog1
             // 
             openFileDialog1.FileName = "openFileDialog1";
-            // 
-            // exporterenToolStripMenuItem
-            // 
-            exporterenToolStripMenuItem.Name = "exporterenToolStripMenuItem";
-            exporterenToolStripMenuItem.Size = new Size(259, 22);
-            exporterenToolStripMenuItem.Text = "Exporteren";
-            exporterenToolStripMenuItem.Click += exporterenToolStripMenuItem_Click;
             // 
             // MainForm
             // 

@@ -123,9 +123,29 @@ namespace OnderhoudsBoekje.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap file_extension_pdf {
+            get {
+                object obj = ResourceManager.GetObject("file_extension_pdf", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap paperclip {
             get {
                 object obj = ResourceManager.GetObject("paperclip", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap pdf_exports {
+            get {
+                object obj = ResourceManager.GetObject("pdf_exports", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
