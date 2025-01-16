@@ -40,7 +40,7 @@ namespace OnderhoudsBoekje
                 var json = File.ReadAllText(configPath);
                 Config = JsonSerializer.Deserialize<ConfigFile>(json)!;
 
-                if (Config.LastOpenedFile != null)
+                if (!String.IsNullOrEmpty(Config.LastOpenedFile))
                 {
                     LoadFile(Config.LastOpenedFile);
                 }
@@ -75,6 +75,8 @@ namespace OnderhoudsBoekje
             catch (IOException ex)
             {
                 MessageBox.Show($"Er is een fout opgetreden bij het openen van het bestand: {ex.Message}", "Fout", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Config.RecentlyOpenedFiles = Config.RecentlyOpenedFiles.Where(x => x != file).ToList();
+                SaveConfig();
                 return;
             }
             catch (JsonException ex)
